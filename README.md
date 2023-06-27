@@ -14,8 +14,8 @@ Follow these steps to install and use the Prismalia formatter.
 To integrate the formatter with VSCode:
 
 1. Install the black extension
-2. Go into Settings (ctrl-,) and search for black
-3. Under `Python > Formatting: Black Path` add /home/yann/.local/bin/pformat. Replace yann with your name.
+2. Go into Settings (<C-,>) and search for black
+3. Under `Python > Formatting: Black Path` put `/home/yann/.local/bin/pformat`. Replace yann with your name.
 
 ### Vim integration
 
@@ -35,14 +35,16 @@ to have this functionality a couple of key strokes away.
 
 ### move_imports
 
-
 ## Contribution
 
 This is a collaborative effort to improve the code quality of our Python scripts.
 As a result, your help and contribution is welcome. Before merging your branch,
 document all your changes and make sure the tests are green. Happy coding!
 
+### Developer environment
+
+#### bash_unit
 
 ### TODO
 
--   Ignore move_imports when encountering #FMT: off
+- Ignore move_imports when encountering #FMT: off
