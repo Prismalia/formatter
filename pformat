@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+
+echo "$@" >/home/yann/output.log
+
+# Initialize the FILENAME variable
+FILENAME=""
+
+# Iterate through the arguments
+for arg in "$@"; do
+    # Check if the argument is not a flag
+    if [[ ${arg:0:2} != "--" ]]; then
+        # Set the FILENAME variable and break the loop
+        FILENAME="$arg"
+        break
+    fi
+done
+
+# Function to move Python imports to the top
+move_imports() {
+    local FILENAME="$1"
+
+    # Create a temporary file
+    local TMP_FILE=$(mktemp)
+    TMP_FILE="/home/yann/tmpfile"
+
+    # Extract lines matching the pattern and store them in a temporary file
+    sed -n -e '/^import.*\|^from.*import.*/p' "$FILENAME" > "$TMP_FILE"
+    #sed -n -e '/^import.*/p' "$FILENAME" > "$TMP_FILE"
+
+    # Remove the extracted lines from the original file
+    sed -i '/^import.*\|^from.*import.*/d' "$FILENAME"
+    #sed -i '/^import.*/d' "$FILENAME"
+
+    # Prepend the extracted lines at the beginning of the original file
+    cat "$TMP_FILE" "$FILENAME" > temp && mv temp "$FILENAME"
+}
+
+
+
+# Uncompromising Python code formatter -- Google 2-space style
+cblack "$FILENAME"
+sleep 0.1
+
+# Move all imports to the top
+move_imports "$FILENAME"
+sleep 0.1
+
+# Sort imports
+isort "$FILENAME"
