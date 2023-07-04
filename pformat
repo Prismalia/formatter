@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-echo "$@" >/home/yann/output.log
-
 # Initialize the FILENAME variable
 FILENAME=""
 
@@ -21,10 +19,10 @@ move_imports() {
 
     # Create a temporary file
     local TMP_FILE=$(mktemp)
-    TMP_FILE="/home/yann/tmpfile"
+    #TMP_FILE="/home/yann/tmpfile"
 
     # Extract lines matching the pattern and store them in a temporary file
-    sed -n -e '/^import.*\|^from.*import.*/p' "$FILENAME" > "$TMP_FILE"
+    sed -n -e '/^import.*\|^from.*import.*/p' "$FILENAME" >"$TMP_FILE"
     #sed -n -e '/^import.*/p' "$FILENAME" > "$TMP_FILE"
 
     # Remove the extracted lines from the original file
@@ -32,18 +30,16 @@ move_imports() {
     #sed -i '/^import.*/d' "$FILENAME"
 
     # Prepend the extracted lines at the beginning of the original file
-    cat "$TMP_FILE" "$FILENAME" > temp && mv temp "$FILENAME"
+    cat "$TMP_FILE" "$FILENAME" >temp && mv temp "$FILENAME"
 }
 
-
-
 # Uncompromising Python code formatter -- Google 2-space style
-cblack "$FILENAME"
+cblack "$FILENAME" &
 sleep 0.1
 
 # Move all imports to the top
-move_imports "$FILENAME"
+move_imports "$FILENAME" &
 sleep 0.1
 
 # Sort imports
-isort "$FILENAME"
+isort "$FILENAME" &
