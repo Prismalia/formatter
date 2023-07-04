@@ -19,15 +19,21 @@ move_imports() {
 
     # Create a temporary file
     local TMP_FILE=$(mktemp)
-    #TMP_FILE="/home/yann/tmpfile"
+
+    local FIRST_LINE=$(head -n 1 "$FILENAME")
+    if [[ $FIRST_LINE == "#%%"* || $FIRST_LINE == "# %%"* ]]; then
+        # Remove the first line
+        sed -i '1d' "$FILENAME"
+
+        # Prepend the first line at the beginning of the original file
+        echo "$FIRST_LINE" >"$TMP_FILE"
+    fi
 
     # Extract lines matching the pattern and store them in a temporary file
-    sed -n -e '/^import.*\|^from.*import.*/p' "$FILENAME" >"$TMP_FILE"
-    #sed -n -e '/^import.*/p' "$FILENAME" > "$TMP_FILE"
+    sed -n -e '/^import.*\|^from.*import.*/p' "$FILENAME" >>"$TMP_FILE"
 
     # Remove the extracted lines from the original file
     sed -i '/^import.*\|^from.*import.*/d' "$FILENAME"
-    #sed -i '/^import.*/d' "$FILENAME"
 
     # Prepend the extracted lines at the beginning of the original file
     cat "$TMP_FILE" "$FILENAME" >temp && mv temp "$FILENAME"
